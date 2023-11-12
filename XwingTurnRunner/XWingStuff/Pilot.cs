@@ -2,11 +2,6 @@
 
 namespace XwingTurnRunner.XWingStuff;
 
-public record Player(
-    int Id,
-    List<Ship> Ships,
-    bool HasInitiative);
-
 public record Pilot(
     int Skill,
     int Points,
