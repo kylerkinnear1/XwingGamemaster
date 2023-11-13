@@ -1,13 +1,15 @@
 ﻿using MediatR;
-using MoreLinq;
+using XwingTurnRunner.XWingStuff.Cards;
+using XwingTurnRunner.XWingStuff.Phases;
+using XwingTurnRunner.XWingStuff.Ships;
 
 namespace XwingTurnRunner.XWingStuff;
 
 public record Player(
-    int Id,
+    List<ShipCard> Cards,
     List<Ship> Ships)
 {
-    public int TotalPoints => Ships.Select(x => x.Pilot.Points).Sum();
+    public int TotalPoints => Cards.Select(x => x.Pilot.Points).Sum();
 }
 
 // TODO: Maybe make a reusable scripting engine for future Tactics RPG Game Engine:
@@ -20,10 +22,9 @@ public record Player(
 // Maybe change 'Phase' to 'State' and the scripting engine is a state machine scripting engine.
 public class GameContext
 {
-    public Player Player1 { get; }
-    public Player Player2 { get; }
-    public Player PlayerWithInitiave { get; set; }
+    public Player[] Players { get; set; }
     public List<Obstacle> Obstacles { get; set; }
+    public List<ShipCard> Ships { get; set; }
 }
 
 public class Game
@@ -32,11 +33,16 @@ public class Game
     private readonly IMediator _mediator;
     private readonly GameContext _context;
     private readonly SetupPhase _setup;
+    private readonly PlanningPhase _planning;
+    private readonly MovementPhase _movement;
 
     public async Task RunGame()
     {
-        await _setup.RunSetup();
-        await SetupGame();
+        await _setup.Run();
+        while (_context.Players.Any(x => x.Ships.Any(y => y.HullRemaining > 0)))
+        {
+
+        }
     }
 
     // Phases:
@@ -51,44 +57,3 @@ public class Game
         // Loop through phases?
     }
 }
-
-public class SetupPhase
-{
-    private readonly GameContext _context;
-    private readonly IMediator _mediator;
-
-    public async Task RunSetup()
-    {
-        _context.PlayerWithInitiave = await SelectInitiative();
-        await PlaceRocks();
-        await PlaceShips();
-    }
-
-    private async Task<Player> SelectInitiative()
-    {
-        var lowestPointPlayer = new[] { _context.Player1, _context.Player2 }
-            .Shuffle()
-            .OrderBy(x => x.TotalPoints)
-            .First();
-
-        var player = await _mediator.Send(new GetPlayerWithInitiativeRequest(lowestPointPlayer));
-        return player;
-    }
-
-    private async Task PlaceRocks() => throw new NotImplementedException();
-
-    private async Task PlaceShips() => throw new NotImplementedException();
-}
-
-
-public class PlanningPhase
-{
-    public async Task RunPlanning() => throw new NotImplementedException();
-}
-
-public class MovementPhase
-{
-    public async Task RunPlanning() => throw new NotImplementedException();
-}
-
-public record GetPlayerWithInitiativeRequest(Player SelectingPlayer) : IRequest<Player>;
