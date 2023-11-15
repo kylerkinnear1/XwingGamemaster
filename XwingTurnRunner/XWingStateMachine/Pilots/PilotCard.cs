@@ -1,6 +1,6 @@
 ﻿using XwingTurnRunner.XWingStateMachine.Dials;
 
-namespace XwingTurnRunner.XWingStateMachine.Cards;
+namespace XwingTurnRunner.XWingStateMachine.Pilots;
 
 public record PilotCard(int Skill, int Points);
 

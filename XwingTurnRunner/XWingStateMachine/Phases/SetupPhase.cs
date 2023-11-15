@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Drawing;
+using MediatR;
 using MoreLinq;
 using XwingTurnRunner.XWingStateMachine.Obstacles;
 
@@ -30,13 +31,20 @@ public class SetupPhase
             .OrderBy(x => x.TotalPoints)
             .First();
 
-        var player = await _mediator.Send(new GetPlayerWithInitiativeRequest(lowestPointPlayer));
+        var player = await _mediator.Send(new SelectInitiativeRequest(lowestPointPlayer));
         return player;
     }
 
-    private async Task<List<Obstacle>> PlaceObstacles()
+    private async Task PlaceObstacles()
     {
-        throw new NotImplementedException();
+        var selectingPlayer = _context.Players.First();
+        for (int i = 0; i < _context.ObstacleCount; i++)
+        {
+            var placement = await _mediator.Send(new PlaceObstacleRequest(selectingPlayer, _context.ObstaclePool));
+            _context.ObstaclePool.Remove(placement.PlacedObstacle);
+            _context.Obstacles.Add(placement.PlacedObstacle);
+            selectingPlayer = _context.Players.Single(x => x != selectingPlayer);
+        }
     }
 
     private async Task PlaceShips()
@@ -45,4 +53,7 @@ public class SetupPhase
     }
 }
 
-public record GetPlayerWithInitiativeRequest(Player SelectingPlayer) : IRequest<Player>;
+public record SelectInitiativeRequest(Player SelectingPlayer) : IRequest<Player>;
+
+public record ObstaclePlacement(Obstacle PlacedObstacle, Point Location);
+public record PlaceObstacleRequest(Player SelectingPlayer, List<Obstacle> ObstaclePool) : IRequest<ObstaclePlacement>;

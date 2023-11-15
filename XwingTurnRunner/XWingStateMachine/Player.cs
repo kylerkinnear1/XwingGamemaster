@@ -1,4 +1,4 @@
-﻿using XwingTurnRunner.XWingStateMachine.Cards;
+﻿using XwingTurnRunner.XWingStateMachine.Pilots;
 
 namespace XwingTurnRunner.XWingStateMachine;
 
