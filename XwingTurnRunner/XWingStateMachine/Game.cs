@@ -19,6 +19,7 @@ public class GameContext
     public List<ShipCard> Ships { get; set; }
     public int ObstacleCount => 6;
     public List<Obstacle> ObstaclePool { get; set; }
+    public Board Board { get; set; }
 }
 
 public class Game

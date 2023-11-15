@@ -49,7 +49,15 @@ public class SetupPhase
 
     private async Task PlaceShips()
     {
-        throw new NotImplementedException();
+        var selectingPlayer = _context.Players.First();
+        var shipPool = _context.Players.SelectMany(x => x.Ships).ToHashSet();
+        while (shipPool.Any())
+        {
+            var request = new PlaceShipRequest(selectingPlayer.Ships.Where(shipPool.Contains).ToList(), selectingPlayer);
+            var placedShip = await _mediator.Send(request);
+            _context.Board.Ships.Add(placedShip);
+            shipPool.Remove(placedShip);
+        }
     }
 }
 
@@ -57,3 +65,5 @@ public record SelectInitiativeRequest(Player SelectingPlayer) : IRequest<Player>
 
 public record ObstaclePlacement(Obstacle PlacedObstacle, Point Location);
 public record PlaceObstacleRequest(Player SelectingPlayer, List<Obstacle> ObstaclePool) : IRequest<ObstaclePlacement>;
+
+public record PlaceShipRequest(List<ShipModel> AvailableShips, Player SelectingPlayer) : IRequest<ShipModel>;
