@@ -38,7 +38,7 @@ public class SetupPhase
     private async Task PlaceObstacles()
     {
         var selectingPlayer = _context.Players.First();
-        for (int i = 0; i < _context.ObstacleCount; i++)
+        for (var i = 0; i < _context.ObstacleCount; i++)
         {
             var placement = await _mediator.Send(new PlaceObstacleRequest(selectingPlayer, _context.ObstaclePool));
             _context.ObstaclePool.Remove(placement.PlacedObstacle);
