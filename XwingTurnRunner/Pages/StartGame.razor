@@ -1,7 +1,17 @@
 ﻿@page "/start-game"
+@inject IGameFactory GameFactory
 
 <h3>New Game Started. What else did you want?</h3>
+<button @onclick="Clicked">Click me!</button>
 
 @code {
 
+    private void Clicked()
+    {
+        var player1 = new Player(new(), new(), new());
+        var player2 = new Player(new(), new(), new());
+        var context = new GameContext(player1, player2);
+        var game = GameFactory.Create(context);
+        game.Bus.Publish(new NewGameRequestedEvent());
+    }
 }

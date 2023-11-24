@@ -94,12 +94,12 @@ public record NewGameRequestedEvent;
 
 public interface IGameFactory
 {
-    Game StartNew(GameContext context);
+    Game Create(GameContext context);
 }
 
 public class GameFactory : IGameFactory
 {
-    public Game StartNew(GameContext context)
+    public Game Create(GameContext context)
     {
         var gameBus = new Bus();
         return new(
