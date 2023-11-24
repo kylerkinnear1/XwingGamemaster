@@ -1,30 +1,55 @@
-﻿using XwingTurnRunner.XWingStateMachine.Obstacles;
+﻿using XwingTurnRunner.Infrastructure;
+using XwingTurnRunner.XWingStateMachine.Obstacles;
 using XwingTurnRunner.XWingStateMachine.Phases;
 using XwingTurnRunner.XWingStateMachine.Pilots;
 
 namespace XwingTurnRunner.XWingStateMachine;
 
-// TODO: Maybe make a reusable scripting engine for future Tactics RPG Game Engine:
-// Try to keep logic and display separate
-// Use 'EventBus' (reusing Mediator for now) to communicate between UI and Logic Engine
-// Request inputs via script
-// Use Subscriptions specified in Game Context? Figure out 'Game' subscribes to use input.
-// Could also do ISubscribe<T>. See what feels good when developing. Add an end game eventually.
-// IPhase Run might be part or the scripting engine?
-// Maybe change 'Phase' to 'State' and the scripting engine is a state machine scripting engine.
+public interface IGameState
+{
+    IEnumerable<Player> Players { get; }
+    IEnumerable<Obstacle> Obstacles { get; }
+    IEnumerable<ShipCard> Ships { get; }
+    Board Board { get; }
+}
+
+// TODO: Clean this up. Not a fan currently.
+public record GameState(GameContext Context) : IGameState
+{
+    public IEnumerable<Player> Players => Context.Players;
+    public IEnumerable<Obstacle> Obstacles => Context.Obstacles;
+    public IEnumerable<ShipCard> Ships => Context.Ships;
+    public Board Board => Context.Board;
+}
+
 public class GameContext
 {
     public Player[] Players { get; set; }
-    public List<Obstacle> Obstacles { get; set; }
-    public List<ShipCard> Ships { get; set; }
+    public List<Obstacle> Obstacles { get; set; } = new();
+    public List<ShipCard> Ships { get; set; } = new();
     public int ObstacleCount => 6;
-    public List<Obstacle> ObstaclePool { get; set; }
+
     public Board Board { get; set; }
+    
+    public GameContext(Player player1, Player player2, Board? board = null)
+    {
+        Players = new [] {player1, player2};
+        Board = board ?? new();
+    }
 }
 
-public class Game
+public interface IGame
 {
-    private readonly GameContext _context;
+    IBus Bus { get; }
+    IGameState State { get; }
+}
+
+public class Game : IGame
+{
+    public IBus Bus { get; }
+    public IGameState State { get; }
+    public GameContext Context { get; }
+    
     private readonly SetupPhase _setup;
     private readonly PlanningPhase _planning;
     private readonly MovementPhase _movement;
@@ -32,6 +57,7 @@ public class Game
     private readonly CleanupPhase _cleanup;
 
     public Game(
+        IBus bus,
         GameContext context,
         SetupPhase setup,
         PlanningPhase planning,
@@ -39,23 +65,50 @@ public class Game
         CombatPhase combat,
         CleanupPhase cleanup)
     {
-        _context = context;
+        Bus = bus;
+        Context = context;
+        State = new GameState(context);
         _setup = setup;
         _planning = planning;
         _movement = movement;
         _combat = combat;
         _cleanup = cleanup;
+
+        Bus.Subscribe<NewGameRequestedEvent>(Run);
     }
 
-    public async Task RunGame()
+    public async Task Run(NewGameRequestedEvent evnt)
     {
         await _setup.Run();
-        while (_context.Players.Any(x => x.Ships.Any(y => y.HullRemaining > 0)))
+        while (Context.Players.Any(x => x.Ships.Any(y => y.HullRemaining > 0)))
         {
             await _planning.Run();
             await _movement.Run();
             await _combat.Run();
             await _cleanup.Run();
         }
+    }
+}
+
+public record NewGameRequestedEvent;
+
+public interface IGameFactory
+{
+    Game StartNew(GameContext context);
+}
+
+public class GameFactory : IGameFactory
+{
+    public Game StartNew(GameContext context)
+    {
+        var gameBus = new Bus();
+        return new(
+            gameBus,
+            context,
+            new(context, gameBus),
+            new(context, gameBus),
+            new(),
+            new(),
+            new());
     }
 }

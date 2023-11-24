@@ -40,8 +40,8 @@ public class SetupPhase
         var selectingPlayer = _context.Players.First();
         for (var i = 0; i < _context.ObstacleCount; i++)
         {
-            var placement = await _bus.Send(new PlaceObstacleRequest(selectingPlayer, _context.ObstaclePool));
-            _context.ObstaclePool.Remove(placement.PlacedObstacle);
+            var placement = await _bus.Send(new PlaceObstacleRequest(selectingPlayer));
+            selectingPlayer.ObstaclePool.Remove(placement.PlacedObstacle);
             _context.Obstacles.Add(placement.PlacedObstacle);
             selectingPlayer = _context.Players.Single(x => x != selectingPlayer);
         }
@@ -64,6 +64,6 @@ public class SetupPhase
 public record SelectInitiativeRequest(Player SelectingPlayer) : IRequest<Player>;
 
 public record ObstaclePlacement(Obstacle PlacedObstacle, Point Location);
-public record PlaceObstacleRequest(Player SelectingPlayer, List<Obstacle> ObstaclePool) : IRequest<ObstaclePlacement>;
+public record PlaceObstacleRequest(Player SelectingPlayer) : IRequest<ObstaclePlacement>;
 
 public record PlaceShipRequest(List<ShipModel> AvailableShips, Player SelectingPlayer) : IRequest<ShipModel>;
