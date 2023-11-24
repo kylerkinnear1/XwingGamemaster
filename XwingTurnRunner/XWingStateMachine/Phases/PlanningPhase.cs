@@ -1,12 +1,18 @@
-﻿using MediatR;
+﻿using XwingTurnRunner.Infrastructure;
 
 namespace XwingTurnRunner.XWingStateMachine.Phases;
 
 public class PlanningPhase
 {
     private readonly GameContext _game;
-    private readonly IMediator _mediator;
-    
+    private readonly IBus _bus;
+
+    public PlanningPhase(GameContext game, IBus bus)
+    {
+        _game = game;
+        _bus = bus;
+    }
+
     public async Task Run()
     {
         var movementGroups = _game.Players
@@ -32,7 +38,7 @@ public class PlanningPhase
                 continue;
             }
 
-            var shipChoice = await _mediator.Send(new SelectShipToActivateRequest(activePlayer, candidates));
+            var shipChoice = await _bus.Send(new SelectShipToActivateRequest(activePlayer, candidates));
             alreadyMovedShips.Add(shipChoice);
         }
 

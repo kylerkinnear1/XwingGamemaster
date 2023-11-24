@@ -1,6 +1,6 @@
-﻿using System.Drawing;
-using MediatR;
-using MoreLinq;
+﻿using MoreLinq;
+using System.Drawing;
+using XwingTurnRunner.Infrastructure;
 using XwingTurnRunner.XWingStateMachine.Obstacles;
 
 namespace XwingTurnRunner.XWingStateMachine.Phases;
@@ -8,13 +8,7 @@ namespace XwingTurnRunner.XWingStateMachine.Phases;
 public class SetupPhase
 {
     private readonly GameContext _context;
-    private readonly IMediator _mediator;
-
-    public SetupPhase(GameContext context, IMediator mediator)
-    {
-        _context = context;
-        _mediator = mediator;
-    }
+    private readonly IBus _bus;
 
     public async Task Run()
     {
@@ -31,7 +25,7 @@ public class SetupPhase
             .OrderBy(x => x.TotalPoints)
             .First();
 
-        var player = await _mediator.Send(new SelectInitiativeRequest(lowestPointPlayer));
+        var player = await _bus.Send(new SelectInitiativeRequest(lowestPointPlayer));
         return player;
     }
 
@@ -40,7 +34,7 @@ public class SetupPhase
         var selectingPlayer = _context.Players.First();
         for (var i = 0; i < _context.ObstacleCount; i++)
         {
-            var placement = await _mediator.Send(new PlaceObstacleRequest(selectingPlayer, _context.ObstaclePool));
+            var placement = await _bus.Send(new PlaceObstacleRequest(selectingPlayer, _context.ObstaclePool));
             _context.ObstaclePool.Remove(placement.PlacedObstacle);
             _context.Obstacles.Add(placement.PlacedObstacle);
             selectingPlayer = _context.Players.Single(x => x != selectingPlayer);
@@ -54,7 +48,7 @@ public class SetupPhase
         while (shipPool.Any())
         {
             var request = new PlaceShipRequest(selectingPlayer.Ships.Where(shipPool.Contains).ToList(), selectingPlayer);
-            var placedShip = await _mediator.Send(request);
+            var placedShip = await _bus.Send<PlaceShipRequest, ShipModel>(request);
             _context.Board.Ships.Add(placedShip);
             shipPool.Remove(placedShip);
         }
