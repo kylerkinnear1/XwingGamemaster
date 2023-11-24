@@ -10,6 +10,12 @@ public class SetupPhase
     private readonly GameContext _context;
     private readonly IBus _bus;
 
+    public SetupPhase(GameContext context, IBus bus)
+    {
+        _context = context;
+        _bus = bus;
+    }
+
     public async Task Run()
     {
         var playerWithInitiative = await SelectInitiative();
