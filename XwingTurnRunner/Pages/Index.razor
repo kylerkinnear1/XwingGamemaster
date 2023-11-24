@@ -1,9 +1,10 @@
 ﻿@page "/"
+@inject NavigationManager Nav;
 
-<h1>Hello, world!</h1>
-<button @onclick="Throw">Test Error</button>
+<button @onclick="StartNewGame">Start New Game</button>
+
 
 @code
 {
-    static void Throw() => throw new Exception("How does error work?");
+    void StartNewGame() => Nav.NavigateTo("start-game");
 }
