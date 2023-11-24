@@ -48,7 +48,7 @@ public class SetupPhase
         while (shipPool.Any())
         {
             var request = new PlaceShipRequest(selectingPlayer.Ships.Where(shipPool.Contains).ToList(), selectingPlayer);
-            var placedShip = await _bus.Send<PlaceShipRequest, ShipModel>(request);
+            var placedShip = await _bus.Send(request);
             _context.Board.Ships.Add(placedShip);
             shipPool.Remove(placedShip);
         }

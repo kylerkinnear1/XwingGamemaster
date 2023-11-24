@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XwingTurnRunner.Tests", "Xw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GreatState", "GreatState\GreatState.csproj", "{EADAFCAB-6043-4F53-B823-E2BD05D7D049}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XwingTurnRunnerEmpty", "XwingTurnRunnerEmpty\XwingTurnRunnerEmpty.csproj", "{6DF834B8-3AEB-41D1-AD1E-0D16187FE474}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{EADAFCAB-6043-4F53-B823-E2BD05D7D049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EADAFCAB-6043-4F53-B823-E2BD05D7D049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EADAFCAB-6043-4F53-B823-E2BD05D7D049}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DF834B8-3AEB-41D1-AD1E-0D16187FE474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DF834B8-3AEB-41D1-AD1E-0D16187FE474}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DF834B8-3AEB-41D1-AD1E-0D16187FE474}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DF834B8-3AEB-41D1-AD1E-0D16187FE474}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
