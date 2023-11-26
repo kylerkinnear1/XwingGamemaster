@@ -1,4 +1,9 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using XwingTurnRunner.XWingStateMachine.Phases
+@using XwingTurnRunner.Messages
+@inject IBus Bus
+@inject NavigationManager Nav
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -10,3 +15,24 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code
+{
+    private IGame? game;
+
+    protected override void OnInitialized()
+    {
+        Bus.Subscribe<NewGameStartedEvent>(x => SubscribeToGame(x.Game));
+    }
+
+    private void SubscribeToGame(IGame newGame)
+    {
+        game = newGame;
+        // TODO: Make a SAGA?
+        game.Bus.Register<SelectInitiativeRequest, Player>(x =>
+        {
+            Nav.NavigateTo("/choose-initiative");
+            return x.SelectingPlayer;
+        });
+    }
+}

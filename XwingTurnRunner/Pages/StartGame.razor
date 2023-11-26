@@ -1,5 +1,7 @@
 ﻿@page "/start-game"
+@using XwingTurnRunner.Messages
 @inject IGameFactory GameFactory
+@inject IBus Bus; // TODO: This seems lke a hack
 
 <h3>New Game Started. What else did you want?</h3>
 <button @onclick="Clicked">Click me!</button>
@@ -12,6 +14,7 @@
         var player2 = new Player(new(), new(), new());
         var context = new GameContext(player1, player2);
         var game = GameFactory.Create(context);
+        Bus.Publish(new NewGameStartedEvent(game));
         game.Bus.Publish(new NewGameRequestedEvent());
     }
 }
