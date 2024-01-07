@@ -1,9 +1,9 @@
-﻿using MoreLinq;
-using System.Drawing;
+﻿using System.Drawing;
+using MoreLinq;
+using XwingTurnRunner.Game.Obstacles;
 using XwingTurnRunner.Infrastructure;
-using XwingTurnRunner.XWingStateMachine.Obstacles;
 
-namespace XwingTurnRunner.XWingStateMachine.Phases;
+namespace XwingTurnRunner.Game.Phases;
 
 public class SetupPhase
 {

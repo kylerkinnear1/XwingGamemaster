@@ -1,7 +1,7 @@
-﻿using XwingTurnRunner.XWingStateMachine.Obstacles;
-using XwingTurnRunner.XWingStateMachine.Pilots;
+﻿using XwingTurnRunner.Game.Obstacles;
+using XwingTurnRunner.Game.Pilots;
 
-namespace XwingTurnRunner.XWingStateMachine;
+namespace XwingTurnRunner.Game;
 
 public record Player(
     List<ShipCard> Cards,

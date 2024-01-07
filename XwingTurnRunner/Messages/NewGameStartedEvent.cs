@@ -1,4 +1,4 @@
-﻿using XwingTurnRunner.XWingStateMachine;
+﻿using XwingTurnRunner.Game;
 
 namespace XwingTurnRunner.Messages;
 

@@ -1,9 +1,9 @@
-﻿using XwingTurnRunner.Infrastructure;
-using XwingTurnRunner.XWingStateMachine.Obstacles;
-using XwingTurnRunner.XWingStateMachine.Phases;
-using XwingTurnRunner.XWingStateMachine.Pilots;
+﻿using XwingTurnRunner.Game.Obstacles;
+using XwingTurnRunner.Game.Phases;
+using XwingTurnRunner.Game.Pilots;
+using XwingTurnRunner.Infrastructure;
 
-namespace XwingTurnRunner.XWingStateMachine;
+namespace XwingTurnRunner.Game;
 
 public interface IGameState
 {

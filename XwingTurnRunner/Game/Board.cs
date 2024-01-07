@@ -1,6 +1,6 @@
-﻿using XwingTurnRunner.XWingStateMachine.Obstacles;
+﻿using XwingTurnRunner.Game.Obstacles;
 
-namespace XwingTurnRunner.XWingStateMachine;
+namespace XwingTurnRunner.Game;
 
 public record Board(
     List<Obstacle> Obstacles,

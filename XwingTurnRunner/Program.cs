@@ -1,5 +1,5 @@
+using XwingTurnRunner.Game;
 using XwingTurnRunner.Infrastructure;
-using XwingTurnRunner.XWingStateMachine;
 
 var builder = WebApplication.CreateBuilder(args);
 

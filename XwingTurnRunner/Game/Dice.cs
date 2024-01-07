@@ -1,4 +1,4 @@
-﻿namespace XwingTurnRunner.XWingStateMachine;
+﻿namespace XwingTurnRunner.Game;
 
 public record Dice<TFace>(IEnumerable<TFace> Faces);
 

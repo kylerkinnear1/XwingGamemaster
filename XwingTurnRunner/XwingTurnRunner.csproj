@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="XWingStateMachine\Bombs\" />
+    <Folder Include="Game\Bombs\" />
   </ItemGroup>
 
 </Project>

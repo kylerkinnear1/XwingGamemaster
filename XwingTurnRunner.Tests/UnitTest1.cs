@@ -1,6 +1,6 @@
 using AutoFixture.Xunit2;
-using XwingTurnRunner.XWingStateMachine.Dials;
-using XwingTurnRunner.XWingStateMachine.Pilots;
+using XwingTurnRunner.Game.Dials;
+using XwingTurnRunner.Game.Pilots;
 
 namespace XwingTurnRunner.Tests;
 

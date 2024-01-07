@@ -1,4 +1,4 @@
-﻿namespace XwingTurnRunner.XWingStateMachine.Dials;
+﻿namespace XwingTurnRunner.Game.Dials;
 
 public record Dial(IEnumerable<Maneuver> Maneuvers);
 

@@ -1,4 +1,4 @@
-﻿namespace XwingTurnRunner.XWingStateMachine.Phases;
+﻿namespace XwingTurnRunner.Game.Phases;
 
 public class CleanupPhase
 {
