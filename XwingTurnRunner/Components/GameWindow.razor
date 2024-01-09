@@ -1,0 +1,39 @@
+﻿@using XwingTurnRunner.Game.Phases
+@inject IGameFactory GameFactory
+
+<h1>Xwing Game Window!</h1>
+@if (activeScreen == Screen.ChooseInitiative)
+{
+    <ChooseInitiative Request="@chooseInitiativeRequest" />
+}
+
+@code {
+    enum Screen { ChooseInitiative }
+
+    public const string ChooseInitiativeId = "choose-initiative";
+    private SelectInitiativeRequest chooseInitiativeRequest;
+
+    private Screen? activeScreen;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var player1 = new Player(new(), new(), new());
+        var player2 = new Player(new(), new(), new());
+        var context = new GameContext(player1, player2);
+        var game = GameFactory.Create(context);
+
+        Bus.Register<SelectInitiativeRequest, Player>(async request =>
+        {
+            chooseInitiativeRequest = request;
+            activeScreen = Screen.ChooseInitiative;
+
+            // TODO: Pick the player
+            await Task.Delay(5000);
+            return player1;
+        });
+
+        await Bus.Publish(new NewGameRequestedEvent());
+        await base.OnInitializedAsync();
+    }
+
+}

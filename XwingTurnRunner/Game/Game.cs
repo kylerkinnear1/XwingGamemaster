@@ -40,16 +40,15 @@ public class GameContext
 
 public interface IGame
 {
-    IBus Bus { get; }
     IGameState State { get; }
 }
 
 public class Game : IGame
 {
-    public IBus Bus { get; }
     public IGameState State { get; }
     public GameContext Context { get; }
-    
+
+    private readonly IBus _bus;
     private readonly SetupPhase _setup;
     private readonly PlanningPhase _planning;
     private readonly MovementPhase _movement;
@@ -65,16 +64,16 @@ public class Game : IGame
         CombatPhase combat,
         CleanupPhase cleanup)
     {
-        Bus = bus;
+        _bus = bus;
         Context = context;
-        State = new GameState(context);
         _setup = setup;
         _planning = planning;
         _movement = movement;
         _combat = combat;
         _cleanup = cleanup;
 
-        Bus.Subscribe<NewGameRequestedEvent>(Run);
+        State = new GameState(context);
+        _bus.Subscribe<NewGameRequestedEvent>(Run);
     }
 
     public async Task Run(NewGameRequestedEvent evnt)
@@ -99,14 +98,17 @@ public interface IGameFactory
 
 public class GameFactory : IGameFactory
 {
+    private readonly IBus _bus;
+
+    public GameFactory(IBus bus) => _bus = bus;
+
     public Game Create(GameContext context)
     {
-        var gameBus = new Bus();
         return new(
-            gameBus,
+            _bus,
             context,
-            new(context, gameBus),
-            new(context, gameBus),
+            new(context, _bus),
+            new(context, _bus),
             new(),
             new(),
             new());

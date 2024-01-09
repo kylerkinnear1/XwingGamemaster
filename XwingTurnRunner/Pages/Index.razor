@@ -1,10 +1,5 @@
 ﻿@page "/"
-@inject NavigationManager Nav
-@inject IBus Bus
 
-<button @onclick="StartNewGame">Start New Game</button>
-
-@code
-{
-    void StartNewGame() => Nav.NavigateTo("start-game");
-}
+<span>above</span>
+<GameWindow />
+<span>below</span>
