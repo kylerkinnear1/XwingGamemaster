@@ -11,8 +11,8 @@ public interface IBus
     
     void Subscribe<TEvent>(Action<TEvent> handler);
     void Subscribe<TEvent>(Func<TEvent, Task> handler);
-    void Register<TRequest, TResponse>(Func<TRequest, TResponse> handler);
-    void Register<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler);
+    void Register<TRequest, TResponse>(Func<TRequest, TResponse> handler) where TRequest : IRequest<TResponse>;
+    void Register<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) where TRequest : IRequest<TResponse>;
 }
 
 public class Bus : IBus
@@ -33,7 +33,8 @@ public class Bus : IBus
             throw new HandlerNotRegisteredException(request.GetType());
         }
 
-        return (TResponse)await handler(request);
+        var response = await handler(request);
+        return (TResponse)response;
     }
 
     public void Subscribe<TEvent>(Action<TEvent> handler) => Subscribe<TEvent>(evnt =>
@@ -48,14 +49,15 @@ public class Bus : IBus
         subscribed.Add(evnt => handler((TEvent)evnt));
     }
 
-    public void Register<TRequest, TResponse>(Func<TRequest, TResponse> handler) 
+    public void Register<TRequest, TResponse>(Func<TRequest, TResponse> handler) where TRequest : IRequest<TResponse>
         => Register<TRequest, TResponse>(request => Task.FromResult(handler(request)));
 
-    public void Register<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler)
+    public void Register<TRequest, TResponse>(Func<TRequest, Task<TResponse>> handler) where TRequest : IRequest<TResponse>
     {
         if (!_requestHandlers.TryAdd(
-                typeof(TRequest),
-                x => handler((TRequest)x).ContinueWith(y => (object)y)))
+                typeof(TRequest), 
+                x => handler((TRequest)x)
+                    .ContinueWith(y => (object)y.Result!)))
         {
             // TODO: Put this back
             //throw new AlreadyRegisteredException(typeof(TRequest));
